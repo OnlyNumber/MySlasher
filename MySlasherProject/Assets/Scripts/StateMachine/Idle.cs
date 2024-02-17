@@ -17,8 +17,7 @@ public class Idle : State
 
     public override void OnEnter()
     {
-        Debug.Log("Idle");
-        Animator.Play(StaticFields.IDLE);
+        Animator.CrossFade(StaticAnimationFields.IDLE, 0.1f);
     }
 
     public override void OnExit()

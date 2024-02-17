@@ -166,7 +166,7 @@ namespace StarterAssets
         {
             //_hasAnimator = TryGetComponent(out _animator);
 
-            IsAttack();
+            //IsAttack();
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -183,7 +183,9 @@ namespace StarterAssets
             {
                 //Instantiate(prefab, Camera.main.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity);
 
-                _animator.SetTrigger(_attack);
+                //_animator.SetTrigger(_attack);
+                Debug.Log("Try attack");
+                GetComponent<StateManager>().ChangeState(StateManager.StateEnum.attack);
                 _input.attack = false;
             }
         }
@@ -198,7 +200,7 @@ namespace StarterAssets
 
         public void ResetAttack()
         {
-            _animator.ResetTrigger(_attack);
+            //_animator.ResetTrigger(_attack);
         }
 
 
@@ -248,15 +250,32 @@ namespace StarterAssets
                 _cinemachineTargetYaw, 0.0f);
         }
 
-        public float TargetSpeed;
+        private float speed;
+
+        public float TargetSpeed
+        {
+            get
+            {
+                return speed;
+            }
+
+            set
+            {
+                speed = value;
+            }
+
+        }
+        public int checkDir = -1;
 
         public float MoveDirectionIndex;
 
-        [SerializeField]
-        private int _angleDirection;
+
+        public System.Action<int> OnChangeDirectionIndex;
 
         [SerializeField]
-        private int _angleOffset;
+        private float _directionCount;
+
+        private float _angleOffset;
 
         private void Move()
         {
@@ -268,6 +287,8 @@ namespace StarterAssets
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) TargetSpeed = 0.0f;
+
+            //OnChangeDirectionIndex?.Invoke((int)MoveDirectionIndex);
 
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -323,20 +344,48 @@ namespace StarterAssets
 
             transform.rotation = Quaternion.Euler(0, angle, 0);
 
+            float directionAngle = 360f / _directionCount;
 
+            _angleOffset = directionAngle / 2f;
 
-            if (_targetRotation > 0)
+            float needTargterRot, needAngle;
+
+            if (_targetRotation >= 0)
             {
-                MoveDirectionIndex = (_targetRotation - angle + _angleOffset) / _angleDirection ;
-            }
-            else if (_targetRotation < 0)
-            {
-                MoveDirectionIndex = (360 - Mathf.Abs(_targetRotation) - Mathf.Abs(angle) + _angleOffset) / _angleDirection;
+                needTargterRot = _targetRotation;
             }
             else
             {
-                MoveDirectionIndex =  (Mathf.Abs(angle) + _angleOffset) / _angleDirection;
+                needTargterRot = 360 + _targetRotation;
             }
+
+            if (angle >= 0)
+            {
+                needAngle = angle;
+            }
+            else
+            {
+                needAngle = 360 + angle;
+            }
+
+            if (needAngle > needTargterRot + _angleOffset + 2)
+            {
+                MoveDirectionIndex = (needTargterRot + (360 - needAngle) + _angleOffset) / directionAngle;
+            }
+            else
+            {
+                MoveDirectionIndex = (needTargterRot - needAngle + _angleOffset) / directionAngle;
+
+            }
+
+
+
+            //if (checkDir != (int)MoveDirectionIndex)
+            //{
+            //Debug.Log(checkDir);
+            OnChangeDirectionIndex?.Invoke((int)MoveDirectionIndex);
+            //checkDir = (int)MoveDirectionIndex;
+            //}
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 

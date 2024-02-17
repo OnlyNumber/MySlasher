@@ -8882,9 +8882,9 @@ MonoBehaviour:
   - {fileID: 1257608222}
   prefab: {fileID: 2053421316}
   TargetSpeed: 0
+  checkDir: -1
   MoveDirectionIndex: 0
-  _angleDirection: 90
-  _angleOffset: 45
+  _directionCount: 8
 --- !u!143 &260189427
 CharacterController:
   m_ObjectHideFlags: 0
@@ -8967,6 +8967,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 260189428}
   personController: {fileID: 260189426}
+  Input: {fileID: 0}
 --- !u!1 &263626472
 GameObject:
   m_ObjectHideFlags: 0
@@ -36110,6 +36111,18 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.97
+      objectReference: {fileID: 0}
     - target: {fileID: 4692655305310795229, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -36117,6 +36130,18 @@ PrefabInstance:
     - target: {fileID: 7098534921072325662, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.97
       objectReference: {fileID: 0}
     - target: {fileID: 7098534921072325729, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: playOnAwake
@@ -42255,6 +42280,18 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.97
+      objectReference: {fileID: 0}
     - target: {fileID: 4692655305310795229, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -42262,6 +42299,18 @@ PrefabInstance:
     - target: {fileID: 7098534921072325662, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.97
       objectReference: {fileID: 0}
     - target: {fileID: 7098534921072325729, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: playOnAwake
@@ -52745,12 +52794,40 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 4692655305310795228, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.97
+      objectReference: {fileID: 0}
     - target: {fileID: 4692655305310795229, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7098534921072325662, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
       propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 7098534921072325728, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7098534921072325729, guid: c258b15b94ddbd948968d0853164edc5, type: 3}
@@ -72659,9 +72736,9 @@ MonoBehaviour:
   - {fileID: 1767711472}
   prefab: {fileID: 2053421316}
   TargetSpeed: 0
+  checkDir: -1
   MoveDirectionIndex: 0
-  _angleDirection: 0
-  _angleOffset: 0
+  _directionCount: 0
 --- !u!114 &5885216828100075702
 MonoBehaviour:
   m_ObjectHideFlags: 0

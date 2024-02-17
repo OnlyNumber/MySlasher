@@ -12,22 +12,34 @@ public class StateManager : MonoBehaviour
     [SerializeField]
     private ThirdPersonController personController;
 
+    public StarterAssetsInputs Input;
+
     private State _currentState;
 
     private Dictionary<StateEnum, State> _states = new Dictionary<StateEnum, State>();
 
     private void Start()
     {
+        Input = GetComponent<StarterAssetsInputs>();
+
         _states.Add(StateEnum.idle, new Idle(_animator, this));
         _states.Add(StateEnum.walkF, new Move(_animator, this));
+        _states.Add(StateEnum.attack, new Attack(_animator, this));
 
         _states.TryGetValue(StateEnum.idle, out _currentState);
 
         _currentState.OnEnter();
+
+        OnStateManagerUpdate += CheckAttack;
+
     }
+
+    public System.Action OnStateManagerUpdate;
 
     private void Update()
     {
+        OnStateManagerUpdate?.Invoke();
+
         _currentState.OnUpdate();
     }
 
@@ -37,10 +49,19 @@ public class StateManager : MonoBehaviour
 
        _states.TryGetValue(state, out _currentState);
 
-        _currentState.OnEnter();
+       _currentState.OnEnter();
 
 
     }    
+
+    public void CheckAttack()
+    {
+        if (Input.attack == true)
+        {
+            ChangeState(StateEnum.attack);
+            Input.attack = false;
+        }
+    }
 
     public ThirdPersonController GetThirdPersonController()
     {
@@ -50,7 +71,8 @@ public class StateManager : MonoBehaviour
     public enum StateEnum
     {
         idle,
-        walkF
+        walkF,
+        attack
     };
 
 }

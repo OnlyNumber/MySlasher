@@ -13,7 +13,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour
+    public class ThirdPersonController : MonoBehaviour, IMoveAble
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -168,7 +168,7 @@ namespace StarterAssets
         private void Update()
         {
             //_hasAnimator = TryGetComponent(out _animator);
-            Debug.Log(_controller.velocity);
+            //Debug.Log(_controller.velocity);
             //IsAttack();
             JumpAndGravity();
             GroundedCheck();
@@ -268,6 +268,9 @@ namespace StarterAssets
             }
 
         }
+
+        //System.Action<int> IMoveAble.OnChangeDirectionIndex { get => OnChangeDirectionIndex; set => OnChangeDirectionIndex += value; }
+
         public int checkDir = -1;
 
         public float MoveDirectionIndex;
@@ -298,6 +301,8 @@ namespace StarterAssets
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
             //if()
+            //OnChangeDirectionIndex += GetSMTH;
+
 
             TargetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
@@ -539,6 +544,28 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        public float GetCurrentSpeed()
+        {
+            return TargetSpeed;
+        }
+
+        public float GetCurrentSprintSpeed()
+        {
+            return SprintSpeed;
+        }
+
+        public void AddOnChangeDirection(System.Action<int> addAction)
+        {
+            Debug.Log(gameObject.name);
+            OnChangeDirectionIndex += addAction;
+        }
+
+        public void RemoveOnChangeDirection(System.Action<int> removeAction)
+        {
+            OnChangeDirectionIndex -= removeAction;
+
         }
     }
 }

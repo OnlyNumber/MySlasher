@@ -20,7 +20,7 @@ public class StateManager : MonoBehaviour
 
     private void Start()
     {
-        Input = GetComponent<StarterAssetsInputs>();
+        //Input = GetComponent<StarterAssetsInputs>();
 
         _states.Add(StateEnum.idle, new Idle(_animator, this));
         _states.Add(StateEnum.walkF, new Move(_animator, this));

@@ -9,6 +9,8 @@ public class Move : State
 
     ThirdPersonController personController;
 
+    IMoveAble moveAble;
+
     private List<string> _walks = new List<string>();
 
     private List<string> _runs = new List<string>();
@@ -21,6 +23,8 @@ public class Move : State
 
     public Move(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
+        moveAble = StateManager.GetThirdPersonController();
+
         personController = StateManager.GetThirdPersonController();
 
         _walks.Add(StaticAnimationFields.WALK_FORWARD);
@@ -46,7 +50,9 @@ public class Move : State
 
     public override void OnEnter()
     {
-        personController.OnChangeDirectionIndex += CheckDir;
+        moveAble.AddOnChangeDirection(CheckDir);
+        Debug.Log("Move enter");
+        //personController.OnChangeDirectionIndex += CheckDir;
         checkDir = -1;
         lastSpeed = -1;
     }
@@ -54,7 +60,9 @@ public class Move : State
 
     public override void OnExit()
     {
-        personController.OnChangeDirectionIndex -= CheckDir;
+        moveAble.RemoveOnChangeDirection(CheckDir);
+
+        //personController.OnChangeDirectionIndex -= CheckDir;
         //personController.checkDir = -1;
     }
 
@@ -73,7 +81,7 @@ public class Move : State
             Animator.Play(StaticAnimationFields.RUN_FORWARD);
             //Animator.CrossFade()
         }*/
-        if (personController.TargetSpeed == 0)
+        if (moveAble.GetCurrentSpeed() == 0)
         {
             StateManager.ChangeState(StateManager.StateEnum.idle);
         }
@@ -81,10 +89,10 @@ public class Move : State
 
     public void CheckDir(int dir)
     {
-        if (checkDir == dir && lastSpeed == personController.TargetSpeed)
+        if (checkDir == dir && lastSpeed == moveAble.GetCurrentSpeed())
             return;
 
-        if (personController.TargetSpeed < personController.SprintSpeed)
+        if (moveAble.GetCurrentSpeed() < moveAble.GetCurrentSprintSpeed())
         {
             //Debug.Log(dir);
             //Animator.Play(_walks[(int)personController.MoveDirectionIndex]);
@@ -101,7 +109,8 @@ public class Move : State
             //Animator.Play(StaticAnimationFields.RUN_FORWARD);
             //Animator.CrossFade()
         }
-        lastSpeed = personController.TargetSpeed;
+
+        lastSpeed = moveAble.GetCurrentSpeed();
         checkDir = dir;
 
         //personController.checkDir = dir;

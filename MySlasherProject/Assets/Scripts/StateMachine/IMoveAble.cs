@@ -4,6 +4,8 @@ using UnityEngine;
 
 public interface IMoveAble
 {
+    //public System.Action<int> OnChangeDirectionIndex { get; set; }
+
     public abstract float GetCurrentSpeed();
 
     public abstract float GetCurrentSprintSpeed();

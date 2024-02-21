@@ -5,13 +5,13 @@ using StarterAssets;
 
 public class Attack : State
 {
-    private ThirdPersonController personController;
+    private ThirdPersonController _personController;
     private int _currentAttackIndex = 0;
     private List<string> _attacks = new List<string>();
 
     public Attack(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
-        personController = StateManager.GetThirdPersonController();
+        _personController = StateManager.GetThirdPersonController();
         _attacks.Add(StaticAnimationFields.ATTACK_1);
         _attacks.Add(StaticAnimationFields.ATTACK_2);
         _attacks.Add(StaticAnimationFields.ATTACK_3);
@@ -20,6 +20,7 @@ public class Attack : State
     public override void OnEnter()
     {
         Animator.CrossFade(_attacks[_currentAttackIndex], 0.1f);
+        _personController.IsAttacking = true;
         StateManager.OnStateManagerUpdate -= StateManager.CheckAttack;
         _currentAttackIndex++;
     }
@@ -33,14 +34,10 @@ public class Attack : State
 
     public override void OnUpdate()
     {
-        if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+        if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !Animator.GetCurrentAnimatorStateInfo(0).IsName(StaticAnimationFields.IDLE))
         {
-            //Debug.Log("Stop");
             StateManager.ChangeState(StateManager.StateEnum.idle);
         }
-
-        //Debug.Log(_currentAttackIndex);
-        
 
         if (StateManager.Input.attack == true &&
             Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.5f &&
@@ -50,6 +47,8 @@ public class Attack : State
             
 
             Animator.CrossFade(_attacks[_currentAttackIndex], 0.1f);
+            _personController.IsAttacking = true;
+
             _currentAttackIndex++;
 
             StateManager.Input.attack = false;

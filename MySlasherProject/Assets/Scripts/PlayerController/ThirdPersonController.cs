@@ -117,6 +117,9 @@ namespace StarterAssets
 
         public GameObject prefab;
 
+        [SerializeField]
+        private StateManager _stateManager;
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -165,7 +168,7 @@ namespace StarterAssets
         private void Update()
         {
             //_hasAnimator = TryGetComponent(out _animator);
-
+            Debug.Log(_controller.velocity);
             //IsAttack();
             JumpAndGravity();
             GroundedCheck();
@@ -277,9 +280,25 @@ namespace StarterAssets
 
         private float _angleOffset;
 
+        public LayerMask mask;
+
+        public bool IsAttacking = false;
+
+        public System.Action<int> GetOnChangeDirection()
+        {
+            return OnChangeDirectionIndex;
+        }
+
+        public void GetSMTH(int index)
+        {
+
+        }
+
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
+            //if()
+
             TargetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
@@ -334,7 +353,12 @@ namespace StarterAssets
 
             //RaycastIn
 
-            Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info);
+
+
+            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info, 100000f, mask))
+            {
+
+            }
 
             Vector3 mousePos = info.point;// Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 dif = mousePos - transform.position;
@@ -342,7 +366,6 @@ namespace StarterAssets
 
             float angle = Mathf.Atan2(dif.x, dif.z) * Mathf.Rad2Deg;
 
-            transform.rotation = Quaternion.Euler(0, angle, 0);
 
             float directionAngle = 360f / _directionCount;
 
@@ -392,9 +415,12 @@ namespace StarterAssets
             //Debug.Log("Direction of movement: " + testDirection);
 
             // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-
+            if (!IsAttacking)
+            {
+                _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+                transform.rotation = Quaternion.Euler(0, angle, 0);
+            }
 
 
             // update animator if using character

@@ -17,6 +17,8 @@ public class AttackControl : MonoBehaviour
 
     public LayerMask mask;
 
+    IAttackAble attackAble;
+
     private void Start()
     {
         foreach (var item in _attackEnemyesLit)
@@ -24,7 +26,7 @@ public class AttackControl : MonoBehaviour
             item.OnTriggerAttack += Attack;
         }
 
-
+        attackAble = GetComponent<IAttackAble>();
     }
 
     public float force = 10;
@@ -41,7 +43,7 @@ public class AttackControl : MonoBehaviour
             rb.AddForce(dir.normalized * force);
         }
         else
-        { // use a special script for character controllers:
+        {
           // try to get the enemy's script ImpactReceiver:
             ImpactReceiver script = collider.GetComponent<ImpactReceiver>();
             // if it has such script, add the impact force:
@@ -53,6 +55,7 @@ public class AttackControl : MonoBehaviour
 
     public void SetupCollider(int index)
     {
+
         _attackEnemyesLit[index].gameObject.SetActive(true);
 
         ImpactReceiver script = GetComponent<ImpactReceiver>();
@@ -62,7 +65,7 @@ public class AttackControl : MonoBehaviour
         Vector3 mousePos = info.point;// Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3 dif = mousePos - transform.position;
         if (script) script.AddImpact(dif.normalized * 20);
-
+        StopAllCoroutines();
         StartCoroutine(StopAttack(index));
     }
 
@@ -70,8 +73,11 @@ public class AttackControl : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         _attackEnemyesLit[index].gameObject.SetActive(false);
-        yield return new WaitForSeconds(0.1f);
-        GetComponent<ThirdPersonController>().IsAttacking = false;
+    }
+
+    public void StopAddForce()
+    {
+        attackAble.SetAttackingState(false);
     }
 
 

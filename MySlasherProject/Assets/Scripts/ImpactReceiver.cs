@@ -17,8 +17,8 @@ public class ImpactReceiver : MonoBehaviour
 
     public void AddImpact(Vector3 force)
     { // CharacterController version of AddForce
-        impact = Vector3.zero;
-        impact += force / mass;
+        //impact = Vector3.zero;
+        impact = force / mass;
     }
 
 

@@ -7,9 +7,11 @@ public class Move : State
 {
 
 
-    ThirdPersonController personController;
+    //ThirdPersonController personController;
 
     IMoveAble moveAble;
+
+    IAttackAble attackAble;
 
     private List<string> _walks = new List<string>();
 
@@ -23,9 +25,11 @@ public class Move : State
 
     public Move(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
-        moveAble = StateManager.GetThirdPersonController();
+        moveAble = StateManager.GetThirdPersonController().GetComponent<IMoveAble>();
 
-        personController = StateManager.GetThirdPersonController();
+        attackAble= StateManager.GetThirdPersonController().GetComponent<IAttackAble>();
+
+        //personController = StateManager.GetThirdPersonController();
 
         _walks.Add(StaticAnimationFields.WALK_FORWARD);
         _walks.Add(StaticAnimationFields.WALK_FORWARD_RIGHT);
@@ -52,7 +56,6 @@ public class Move : State
     {
         moveAble.AddOnChangeDirection(CheckDir);
         Debug.Log("Move enter");
-        //personController.OnChangeDirectionIndex += CheckDir;
         checkDir = -1;
         lastSpeed = -1;
     }
@@ -61,61 +64,36 @@ public class Move : State
     public override void OnExit()
     {
         moveAble.RemoveOnChangeDirection(CheckDir);
-
-        //personController.OnChangeDirectionIndex -= CheckDir;
-        //personController.checkDir = -1;
     }
 
     public override void OnUpdate()
     {
-        /*if (personController.TargetSpeed < personController.SprintSpeed && personController.TargetSpeed > 0)
-        {
-            Animator.Play(_walks[(int)personController.MoveDirectionIndex]);
-
-            //Animator.CrossFade(_walks[(int)personController.MoveDirectionIndex], 0,0,0,1f);
-            if(!Animator.IsInTransition(0))
-            Animator.CrossFade(_walks[(int)personController.MoveDirectionIndex], 0.25f,0, 0.25f, 0.25f);
-        }
-        else if (personController.TargetSpeed > 0)
-        {
-            Animator.Play(StaticAnimationFields.RUN_FORWARD);
-            //Animator.CrossFade()
-        }*/
+        //Debug.Log("MOVE");
+        
         if (moveAble.GetCurrentSpeed() == 0)
         {
-            StateManager.ChangeState(StateManager.StateEnum.idle);
+            Debug.Log("Change to Idle from Move");
+            StateManager.ChangeState(StateEnum.idle);
         }
     }
 
     public void CheckDir(int dir)
     {
-        if (checkDir == dir && lastSpeed == moveAble.GetCurrentSpeed())
+        if (checkDir == dir && lastSpeed == moveAble.GetCurrentSpeed() )
             return;
 
         if (moveAble.GetCurrentSpeed() < moveAble.GetCurrentSprintSpeed())
         {
-            //Debug.Log(dir);
-            //Animator.Play(_walks[(int)personController.MoveDirectionIndex]);
-
-            //Animator.CrossFade(_walks[(int)personController.MoveDirectionIndex], 0,0,0,1f);
-            //if (!Animator.IsInTransition(0))
-            
-            Animator.CrossFade(_walks[dir], 0.2f/*, 0, 0.25f, 0.25f*/);
+            Animator.CrossFade(_walks[dir], 0.2f);
         
         }
         else
         {
             Animator.CrossFade(_runs[dir], 0.2f);
-            //Animator.Play(StaticAnimationFields.RUN_FORWARD);
-            //Animator.CrossFade()
         }
 
         lastSpeed = moveAble.GetCurrentSpeed();
         checkDir = dir;
-
-        //personController.checkDir = dir;
-
-
     }
 
 }

@@ -6,12 +6,13 @@ using StarterAssets;
 
 public class Idle : State
 {
-    ThirdPersonController personController;
+    //ThirdPersonController personController;
 
+    IMoveAble moveAble;
 
     public Idle(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
-        personController = StateManager.GetThirdPersonController();
+        moveAble = StateManager.GetThirdPersonController().GetComponent<IMoveAble>();
 
     }
 
@@ -27,9 +28,11 @@ public class Idle : State
 
     public override void OnUpdate()
     {
-        if (personController.TargetSpeed > 0)
+        Debug.Log("IDLE");
+
+        if (moveAble.GetCurrentSpeed() > 0)
         {
-            StateManager.ChangeState(StateManager.StateEnum.walkF);
+            StateManager.ChangeState(StateEnum.walkF);
 
 
         }

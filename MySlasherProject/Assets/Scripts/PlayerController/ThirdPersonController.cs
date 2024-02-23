@@ -13,7 +13,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour, IMoveAble
+    public class ThirdPersonController : MonoBehaviour, IMoveAble, IAttackAble
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -120,6 +120,7 @@ namespace StarterAssets
         [SerializeField]
         private StateManager _stateManager;
 
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -132,6 +133,36 @@ namespace StarterAssets
             }
         }
 
+        private float speed;
+        
+        public float TargetSpeed
+        {
+            get
+            {
+                return speed;
+            }
+
+            set
+            {
+                speed = value;
+            }
+
+        }
+
+        public float MoveDirectionIndex;
+
+        public System.Action<int> OnChangeDirectionIndex;
+
+        [SerializeField]
+        private float _directionCount;
+
+        private float _angleOffset;
+
+        public LayerMask mask;
+
+        public bool IsAttacking = false;
+
+        public System.Action OnPersonControllerUpdate;
 
         private void Awake()
         {
@@ -157,22 +188,27 @@ namespace StarterAssets
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
+            //AssignAnimationIDs();
 
-            AssignAnimationIDs();
+
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            SetCheckAttackState(true);
         }
 
         private void Update()
         {
             //_hasAnimator = TryGetComponent(out _animator);
-            //Debug.Log(_controller.velocity);
-            //IsAttack();
+            OnPersonControllerUpdate?.Invoke();
+
             JumpAndGravity();
             GroundedCheck();
+            if(!IsAttacking)
             Move();
+
+
         }
 
         private void LateUpdate()
@@ -180,41 +216,9 @@ namespace StarterAssets
             CameraRotation();
         }
 
-        public void IsAttack()
-        {
-            if (_input.attack == true && _hasAnimator)
-            {
-                //Instantiate(prefab, Camera.main.ScreenToWorldPoint(Input.mousePosition), Quaternion.identity);
-
-                //_animator.SetTrigger(_attack);
-                Debug.Log("Try attack");
-                GetComponent<StateManager>().ChangeState(StateManager.StateEnum.attack);
-                _input.attack = false;
-            }
-        }
-
         public void ParticleAttack(int particle)
         {
             particleSystem[particle].Play();
-        }
-
-
-        //private bool _isCanAttack = true;
-
-        public void ResetAttack()
-        {
-            //_animator.ResetTrigger(_attack);
-        }
-
-
-        private void AssignAnimationIDs()
-        {
-            _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
-            _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-            _attack = Animator.StringToHash("Attack");
         }
 
         private void GroundedCheck()
@@ -251,50 +255,6 @@ namespace StarterAssets
             // Cinemachine will follow this target
             CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                 _cinemachineTargetYaw, 0.0f);
-        }
-
-        private float speed;
-
-        public float TargetSpeed
-        {
-            get
-            {
-                return speed;
-            }
-
-            set
-            {
-                speed = value;
-            }
-
-        }
-
-        //System.Action<int> IMoveAble.OnChangeDirectionIndex { get => OnChangeDirectionIndex; set => OnChangeDirectionIndex += value; }
-
-        public int checkDir = -1;
-
-        public float MoveDirectionIndex;
-
-
-        public System.Action<int> OnChangeDirectionIndex;
-
-        [SerializeField]
-        private float _directionCount;
-
-        private float _angleOffset;
-
-        public LayerMask mask;
-
-        public bool IsAttacking = false;
-
-        public System.Action<int> GetOnChangeDirection()
-        {
-            return OnChangeDirectionIndex;
-        }
-
-        public void GetSMTH(int index)
-        {
-
         }
 
         private void Move()
@@ -406,26 +366,21 @@ namespace StarterAssets
 
             }
 
+            Debug.Log("Invoke");
 
-
-            //if (checkDir != (int)MoveDirectionIndex)
-            //{
-            //Debug.Log(checkDir);
             OnChangeDirectionIndex?.Invoke((int)MoveDirectionIndex);
-            //checkDir = (int)MoveDirectionIndex;
-            //}
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             //Debug.Log("Direction of movement: " + testDirection);
 
             // move the player
-            if (!IsAttacking)
-            {
+            //if (!IsAttacking)
+            //{
                 _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
                 transform.rotation = Quaternion.Euler(0, angle, 0);
-            }
+            //}
 
 
             // update animator if using character
@@ -558,7 +513,6 @@ namespace StarterAssets
 
         public void AddOnChangeDirection(System.Action<int> addAction)
         {
-            Debug.Log(gameObject.name);
             OnChangeDirectionIndex += addAction;
         }
 
@@ -566,6 +520,49 @@ namespace StarterAssets
         {
             OnChangeDirectionIndex -= removeAction;
 
+        }
+
+        public void SetAttackingState(bool state)
+        {
+            IsAttacking = state;
+        }
+
+        public bool GetAttackingState()
+        {
+            return IsAttacking;
+        }
+
+        public void CheckAttack()
+        {
+            if (_input.attack == true)
+            {
+                _stateManager.ChangeState(StateEnum.attackCombo);
+                _input.attack = false;
+            }
+        }
+
+        public void SetAttackInput(bool state)
+        {
+            _input.attack = state;
+        }
+
+        public bool GetAttackInput()
+        {
+            return _input.attack;
+
+        }
+
+        public void SetCheckAttackState(bool state)
+        {
+            if(state)
+            {
+                OnPersonControllerUpdate += CheckAttack;
+            }
+            else
+            {
+                OnPersonControllerUpdate -= CheckAttack;
+
+            }
         }
     }
 }

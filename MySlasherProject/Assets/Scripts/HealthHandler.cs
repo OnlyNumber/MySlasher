@@ -28,6 +28,8 @@ public class HealthHandler : MonoBehaviour
                 _currentHealth = MaxHealth;
             }
 
+            Debug.Log(_currentHealth);
+
             OnHealthChange?.Invoke(_currentHealth);
 
         }
@@ -36,6 +38,7 @@ public class HealthHandler : MonoBehaviour
 
     private void Start()
     {
+        _currentHealth = MaxHealth;
         //OnHealthChange += (() => Debug.Log(""));
     }
 

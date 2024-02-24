@@ -22,6 +22,7 @@ public class StateManager : MonoBehaviour
         _states.Add(StateEnum.walkF, new Move(_animator, this));
         _states.Add(StateEnum.attackCombo, new AttackCombo(_animator, this));
         _states.Add(StateEnum.attack, new Attack(_animator, this));
+        _states.Add(StateEnum.stun, new Stun(_animator, this));
 
 
         _states.TryGetValue(StateEnum.idle, out _currentState);
@@ -49,7 +50,7 @@ public class StateManager : MonoBehaviour
 
     }
 
-    public GameObject GetThirdPersonController()
+    public GameObject GetStateManagerOwner()
     {
         return personController;
     }
@@ -67,5 +68,6 @@ public class StateManager : MonoBehaviour
         idle,
         walkF,
         attackCombo,
-        attack
+        attack,
+        stun
     };

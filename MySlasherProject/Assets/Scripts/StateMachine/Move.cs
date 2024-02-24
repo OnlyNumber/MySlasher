@@ -25,9 +25,9 @@ public class Move : State
 
     public Move(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
-        moveAble = StateManager.GetThirdPersonController().GetComponent<IMoveAble>();
+        moveAble = StateManager.GetStateManagerOwner().GetComponent<IMoveAble>();
 
-        attackAble= StateManager.GetThirdPersonController().GetComponent<IAttackAble>();
+        attackAble= StateManager.GetStateManagerOwner().GetComponent<IAttackAble>();
 
         //personController = StateManager.GetThirdPersonController();
 
@@ -55,7 +55,6 @@ public class Move : State
     public override void OnEnter()
     {
         moveAble.AddOnChangeDirection(CheckDir);
-        Debug.Log("Move enter");
         checkDir = -1;
         lastSpeed = -1;
     }
@@ -72,7 +71,7 @@ public class Move : State
         
         if (moveAble.GetCurrentSpeed() == 0)
         {
-            Debug.Log("Change to Idle from Move");
+            //Debug.Log("Change to Idle from Move");
             StateManager.ChangeState(StateEnum.idle);
         }
     }

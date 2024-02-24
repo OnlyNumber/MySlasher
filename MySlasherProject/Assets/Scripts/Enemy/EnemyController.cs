@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble
+public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
 {
     [SerializeField]
     private CharacterController _characterController;
 
+    [SerializeField]
     private StateManager _stateManager;
 
     [SerializeField]
@@ -29,9 +30,18 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble
 
     private System.Action OnEnemyUpdate;
 
-    private bool _isAttacking;
+    [SerializeField]
+    private bool _isAttacking = false;
 
     private bool _isAttackInput;
+
+    [SerializeField]
+    private float _timeStun;
+
+    private bool _isStunned;
+
+    [SerializeField]
+    private float _damage;
 
     private void Start()
     {
@@ -41,21 +51,25 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble
     // Update is called once per frame
     public void OnUpdate()
     {
+        if (_isStunned)
+        {
+            return;
+        }
 
         OnEnemyUpdate?.Invoke();
         _currentTimeBetweenAttack -= Time.deltaTime;
-        if(!_isAttacking)
-        Move();
+        if (!_isAttacking)
+            Move();
     }
 
     public void CheckDistance()
     {
-        if (Vector3.Distance(transform.position, _player.position) < 1)
+        if (Vector3.Distance(transform.position, _player.position) < 2)
         {
             _currentSpeed = 0;
             if (_currentTimeBetweenAttack <= 0)
             {
-                GetComponent<StateManager>().ChangeState(StateEnum.attackCombo);
+                GetComponent<StateManager>().ChangeState(StateEnum.attack);
                 _currentTimeBetweenAttack = _timeBetweenAttack;
             }
         }
@@ -82,6 +96,11 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble
         //
         OnChangeDirectionIndex?.Invoke(0);
 
+    }
+
+    public void Stun()
+    {
+        _stateManager.ChangeState(StateEnum.stun);
     }
 
     public bool GetAttackingState()
@@ -137,4 +156,24 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble
 
         }
     }
+
+    public float GetStunTime()
+    {
+        return _timeStun;
+    }
+
+    public void SetStun(bool state)
+    {
+        _isStunned = state;
+    }
+
+    public void GoToStunState()
+    {
+        _stateManager.ChangeState(StateEnum.stun);
+    }
+    public float GetDamage()
+    {
+        return _damage;
+    }
+
 }

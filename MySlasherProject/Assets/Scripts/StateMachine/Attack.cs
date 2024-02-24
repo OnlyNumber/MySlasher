@@ -10,7 +10,7 @@ public class Attack : State
     public Attack(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
 
-        attackAble = StateManager.GetThirdPersonController().GetComponent<IAttackAble>();
+        attackAble = StateManager.GetStateManagerOwner().GetComponent<IAttackAble>();
 
         //_personController = StateManager.GetThirdPersonController();
     }
@@ -18,13 +18,17 @@ public class Attack : State
     public override void OnEnter()
     {
         attackAble.SetAttackingState(true);
+        attackAble.SetCheckAttackState(false);
         Animator.CrossFade(StaticAnimationFields.ATTACK_1, 0.1f);
     }
 
     public override void OnExit()
     {
-
+        attackAble.SetCheckAttackState(true);
+        attackAble.SetAttackInput(false);
+        attackAble.SetAttackingState(false);
     }
+
 
     public override void OnUpdate()
     {

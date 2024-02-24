@@ -14,7 +14,7 @@ public class AttackCombo : State
     public AttackCombo(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
 
-        attackAble = StateManager.GetThirdPersonController().GetComponent<IAttackAble>();
+        attackAble = StateManager.GetStateManagerOwner().GetComponent<IAttackAble>();
 
         _attacks.Add(StaticAnimationFields.ATTACK_1);
         _attacks.Add(StaticAnimationFields.ATTACK_2);
@@ -35,9 +35,9 @@ public class AttackCombo : State
     {
         _currentAttackIndex = 0;
         attackAble.SetCheckAttackState(true);
+        attackAble.SetAttackInput(false);
 
         //StateManager.OnStateManagerUpdate += StateManager.CheckAttack;
-        attackAble.SetAttackInput(false);
         //StateManager.Input.attack = false;
     }
 
@@ -55,14 +55,12 @@ public class AttackCombo : State
 
             _currentAttackIndex++;
             attackAble.SetAttackInput(false);
-            //StateManager.Input.attack = false;
         }
-        else if (_currentAttackIndex >= _attacks.Count && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+        else if (_currentAttackIndex >= _attacks.Count && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
             _currentAttackIndex = 0;
-            attackAble.SetAttackInput(false);
+            //attackAble.SetAttackInput(false);
 
-            //StateManager.Input.attack = false;
         }
     }
 

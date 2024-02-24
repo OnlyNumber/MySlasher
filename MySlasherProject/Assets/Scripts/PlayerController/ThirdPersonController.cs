@@ -13,7 +13,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour, IMoveAble, IAttackAble
+    public class ThirdPersonController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -112,9 +112,6 @@ namespace StarterAssets
 
         private bool _hasAnimator;
 
-        [SerializeField]
-        private List<ParticleSystem> particleSystem;
-
         public GameObject prefab;
 
         [SerializeField]
@@ -164,6 +161,14 @@ namespace StarterAssets
 
         public System.Action OnPersonControllerUpdate;
 
+        [SerializeField]
+        private float _stunTime;
+
+        private bool _isStunned;
+
+        [SerializeField]
+        private float _damage;
+
         private void Awake()
         {
             // get a reference to our main camera
@@ -200,6 +205,11 @@ namespace StarterAssets
 
         private void Update()
         {
+            if (_isStunned)
+            {
+                return;
+            }
+
             //_hasAnimator = TryGetComponent(out _animator);
             OnPersonControllerUpdate?.Invoke();
 
@@ -214,11 +224,6 @@ namespace StarterAssets
         private void LateUpdate()
         {
             CameraRotation();
-        }
-
-        public void ParticleAttack(int particle)
-        {
-            particleSystem[particle].Play();
         }
 
         private void GroundedCheck()
@@ -366,29 +371,14 @@ namespace StarterAssets
 
             }
 
-            Debug.Log("Invoke");
-
             OnChangeDirectionIndex?.Invoke((int)MoveDirectionIndex);
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
-            //Debug.Log("Direction of movement: " + testDirection);
-
-            // move the player
-            //if (!IsAttacking)
-            //{
+            
                 _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
                 transform.rotation = Quaternion.Euler(0, angle, 0);
-            //}
-
-
-            // update animator if using character
-            if (_hasAnimator)
-            {
-                _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-            }
         }
 
         private void JumpAndGravity()
@@ -564,5 +554,32 @@ namespace StarterAssets
 
             }
         }
+
+        public float GetStunTime()
+        {
+            return _stunTime;
+        }
+
+        public void SetStun(bool state)
+        {
+            _isStunned = state;
+
+            if(state)
+            {
+                IsAttacking = false;
+            }
+
+        }
+
+        public void GoToStunState()
+        {
+            _stateManager.ChangeState(StateEnum.stun);
+        }
+
+        public float GetDamage()
+        {
+            return _damage;
+        }
+
     }
 }

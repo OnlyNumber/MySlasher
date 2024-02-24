@@ -14,7 +14,7 @@ public class HealthUI : MonoBehaviour
 
     private void Start()
     {
-        _healthHandler = FindObjectOfType<HealthHandler>();
+        //_healthHandler = FindObjectOfType<HealthHandler>();
         _healthHandler.OnHealthChange += Change;
     }
 
@@ -26,7 +26,8 @@ public class HealthUI : MonoBehaviour
 
     public void Change(int currentHealth)
     {
-        HealthBarImage.fillAmount = currentHealth / _healthHandler.MaxHealth;
+        HealthBarImage.fillAmount = (float)currentHealth / (float)_healthHandler.MaxHealth;
+        //Debug.Log("Health percent:" +currentHealth / _healthHandler.MaxHealth);
         HealthText.text = currentHealth + " / " + _healthHandler.MaxHealth;
     }
 

@@ -45,6 +45,10 @@ public static class StaticAnimationFields
 
     public static string ATTACK_3 = "Attack3";
 
+    public static string STUN = "Stun";
+
+    public static string DEATH = "Death";
+
 
 
 }

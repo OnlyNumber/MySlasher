@@ -12,7 +12,7 @@ public class Idle : State
 
     public Idle(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
-        moveAble = StateManager.GetThirdPersonController().GetComponent<IMoveAble>();
+        moveAble = StateManager.GetStateManagerOwner().GetComponent<IMoveAble>();
 
     }
 
@@ -28,7 +28,7 @@ public class Idle : State
 
     public override void OnUpdate()
     {
-        Debug.Log("IDLE");
+        //Debug.Log("IDLE");
 
         if (moveAble.GetCurrentSpeed() > 0)
         {

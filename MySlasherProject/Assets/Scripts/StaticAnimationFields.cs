@@ -49,6 +49,13 @@ public static class StaticAnimationFields
 
     public static string DEATH = "Death";
 
+    public static string DODGE_FORWARD = "DodgeF";
+
+    public static string DODGE_BACK = "DodgeB";
+    
+    public static string DODGE_RIGHT = "DodgeR";
+    
+    public static string DODGE_LEFT = "DodgeL";
 
 
 }

@@ -90,16 +90,16 @@ public class AttackControl : MonoBehaviour
             if (script) script.AddImpact(dir.normalized * force);
         }
 
-        if(collider.TryGetComponent(out HealthHandler healthHandler))
-        {
-            healthHandler.ChangeHealth(-(int)attackAble.GetDamage());
-        }
 
         if (collider.TryGetComponent(out IStunAble enemyController))
         {
             enemyController.GoToStunState();
         }
 
+        if(collider.TryGetComponent(out HealthHandler healthHandler))
+        {
+            healthHandler.ChangeHealth(-(int)attackAble.GetDamage());
+        }
     }
 
     public void SetupCollider(int index)

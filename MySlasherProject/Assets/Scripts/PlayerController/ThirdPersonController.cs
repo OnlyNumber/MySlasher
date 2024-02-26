@@ -117,7 +117,6 @@ namespace StarterAssets
         [SerializeField]
         private StateManager _stateManager;
 
-
         private bool IsCurrentDeviceMouse
         {
             get
@@ -169,6 +168,9 @@ namespace StarterAssets
         [SerializeField]
         private float _damage;
 
+        [SerializeField]
+        private HealthHandler _healthHandler;
+
         private void Awake()
         {
             // get a reference to our main camera
@@ -201,6 +203,9 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
             SetCheckAttackState(true);
+
+            _healthHandler.OnHealthChange += CheckDeath;
+
         }
 
         private void Update()
@@ -213,7 +218,7 @@ namespace StarterAssets
             //_hasAnimator = TryGetComponent(out _animator);
             OnPersonControllerUpdate?.Invoke();
 
-            JumpAndGravity();
+            //JumpAndGravity();
             GroundedCheck();
             if(!IsAttacking)
             Move();
@@ -375,9 +380,9 @@ namespace StarterAssets
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
-            
-                _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                                 new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            //_verticalVelocity
+            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
+                                 new Vector3(0.0f, -2f, 0.0f) * Time.deltaTime);
                 transform.rotation = Quaternion.Euler(0, angle, 0);
         }
 
@@ -581,5 +586,28 @@ namespace StarterAssets
             return _damage;
         }
 
+        public void CheckDeath(int health)
+        {
+            if (health <= 0)
+            {
+                //Debug.Log("dead");
+                _stateManager.ChangeState(StateEnum.death);
+            }
+        }
+
+        public void StartDeath()
+        {
+            Destroy(gameObject);
+        }
+
+        public int CurrentDirection()
+        {
+            return (int)MoveDirectionIndex;
+        }
+
+        public int AmountOfDirections()
+        {
+            return (int)_directionCount;
+        }
     }
 }

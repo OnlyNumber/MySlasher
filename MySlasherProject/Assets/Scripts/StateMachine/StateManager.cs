@@ -23,6 +23,8 @@ public class StateManager : MonoBehaviour
         _states.Add(StateEnum.attackCombo, new AttackCombo(_animator, this));
         _states.Add(StateEnum.attack, new Attack(_animator, this));
         _states.Add(StateEnum.stun, new Stun(_animator, this));
+        _states.Add(StateEnum.death, new Death(_animator, this));
+        //_states.Add(StateEnum.death, new Death(_animator, this));
 
 
         _states.TryGetValue(StateEnum.idle, out _currentState);
@@ -69,5 +71,6 @@ public class StateManager : MonoBehaviour
         walkF,
         attackCombo,
         attack,
-        stun
+        stun,
+        death
     };

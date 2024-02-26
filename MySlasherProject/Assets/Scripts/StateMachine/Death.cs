@@ -17,6 +17,7 @@ public class Death : State
 
     public override void OnEnter()
     {
+        Debug.Log("Start death");
         stunAble.SetStun(true);
         Animator.CrossFade(StaticAnimationFields.DEATH, 0.1f);
     }

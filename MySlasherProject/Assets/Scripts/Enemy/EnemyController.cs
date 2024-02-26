@@ -43,10 +43,15 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
     [SerializeField]
     private float _damage;
 
+    [SerializeField]
+    private HealthHandler _healthHandler;
+
     private void Start()
     {
         OnEnemyUpdate += CheckDistance;
+        _healthHandler.OnHealthChange += CheckDeath;
     }
+
 
     // Update is called once per frame
     public void OnUpdate()
@@ -64,6 +69,12 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
 
     public void CheckDistance()
     {
+        if(_player == null)
+        {
+            _currentSpeed = 0;
+            return;
+        }
+
         if (Vector3.Distance(transform.position, _player.position) < 2)
         {
             _currentSpeed = 0;
@@ -176,4 +187,27 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
         return _damage;
     }
 
+    public void CheckDeath(int health)
+    {
+        if(health <=0)
+        {
+            //Debug.Log("dead");
+            _stateManager.ChangeState(StateEnum.death);
+        }    
+    }
+
+    public void StartDeath()
+    {
+        Destroy(gameObject);
+    }
+
+    public int CurrentDirection()
+    {
+        return 0;
+    }
+
+    public int AmountOfDirections()
+    {
+        return 1;
+    }
 }

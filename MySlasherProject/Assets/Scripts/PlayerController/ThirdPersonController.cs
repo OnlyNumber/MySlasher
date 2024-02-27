@@ -218,7 +218,8 @@ namespace StarterAssets
             //_hasAnimator = TryGetComponent(out _animator);
             OnPersonControllerUpdate?.Invoke();
 
-            //JumpAndGravity();
+            JumpAndGravity();
+            Dodge();
             GroundedCheck();
             if(!IsAttacking)
             Move();
@@ -386,6 +387,19 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0, angle, 0);
         }
 
+        private void Dodge()
+        {
+            if (_input.jump)
+            {
+                //int direction = moveAble.GetCurrentDirection() / _dodges.Count;
+                Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+
+                GetComponent<ImpactReceiver>().AddImpact(targetDirection.normalized * 30);
+                _stateManager.ChangeState(StateEnum.dodge);
+                _input.jump = false;
+            }
+        }
+
         private void JumpAndGravity()
         {
             if (Grounded)
@@ -405,9 +419,9 @@ namespace StarterAssets
                 {
                     _verticalVelocity = -2f;
                 }
-
+                #region Jump
                 // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                /*if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -423,7 +437,8 @@ namespace StarterAssets
                 if (_jumpTimeoutDelta >= 0.0f)
                 {
                     _jumpTimeoutDelta -= Time.deltaTime;
-                }
+                }*/
+                #endregion
             }
             else
             {
@@ -445,7 +460,7 @@ namespace StarterAssets
                 }
 
                 // if we are not grounded, do not jump
-                _input.jump = false;
+                //_input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -600,12 +615,12 @@ namespace StarterAssets
             Destroy(gameObject);
         }
 
-        public int CurrentDirection()
+        public int GetCurrentDirection()
         {
             return (int)MoveDirectionIndex;
         }
 
-        public int AmountOfDirections()
+        public int GetAmountOfDirections()
         {
             return (int)_directionCount;
         }

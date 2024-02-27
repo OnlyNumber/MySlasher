@@ -24,7 +24,7 @@ public class StateManager : MonoBehaviour
         _states.Add(StateEnum.attack, new Attack(_animator, this));
         _states.Add(StateEnum.stun, new Stun(_animator, this));
         _states.Add(StateEnum.death, new Death(_animator, this));
-        //_states.Add(StateEnum.death, new Death(_animator, this));
+        _states.Add(StateEnum.dodge, new Dodge(_animator, this));
 
 
         _states.TryGetValue(StateEnum.idle, out _currentState);
@@ -59,6 +59,7 @@ public class StateManager : MonoBehaviour
 
     public void BackToIdle()
     {
+        //Debug.Log("BackToIdle");
         ChangeState(StateEnum.idle);
 
     }
@@ -72,5 +73,6 @@ public class StateManager : MonoBehaviour
         attackCombo,
         attack,
         stun,
-        death
+        death,
+        dodge
     };

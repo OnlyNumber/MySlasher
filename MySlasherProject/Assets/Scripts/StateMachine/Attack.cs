@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Attack : State
 {
-    IAttackAble attackAble;
+    private IAttackAble attackAble;
 
 
     public Attack(Animator animator, StateManager stateManager) : base(animator, stateManager)

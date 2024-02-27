@@ -201,12 +201,12 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
         Destroy(gameObject);
     }
 
-    public int CurrentDirection()
+    public int GetCurrentDirection()
     {
         return 0;
     }
 
-    public int AmountOfDirections()
+    public int GetAmountOfDirections()
     {
         return 1;
     }

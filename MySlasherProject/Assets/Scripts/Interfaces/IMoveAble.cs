@@ -14,8 +14,8 @@ public interface IMoveAble
 
     public abstract void RemoveOnChangeDirection(System.Action<int> removeAction);
 
-    public abstract int CurrentDirection();
+    public abstract int GetCurrentDirection();
 
-    public abstract int AmountOfDirections();
+    public abstract int GetAmountOfDirections();
 
 }

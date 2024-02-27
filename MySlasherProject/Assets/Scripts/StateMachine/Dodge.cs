@@ -5,32 +5,35 @@ using UnityEngine;
 public class Dodge : State
 {
     private IMoveAble moveAble;
-    private List<string> _dodges;
+    private IAttackAble attackAble;
+    private List<string> _dodges = new List<string>();
 
     public Dodge(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
         moveAble = StateManager.GetStateManagerOwner().GetComponent<IMoveAble>();
-        _dodges.Add(StaticAnimationFields.WALK_FORWARD);
-        _dodges.Add(StaticAnimationFields.WALK_RIGHT);
-        _dodges.Add(StaticAnimationFields.WALK_BACK);
-        _dodges.Add(StaticAnimationFields.WALK_LEFT);
+        attackAble = StateManager.GetStateManagerOwner().GetComponent<IAttackAble>();
+        _dodges.Add(StaticAnimationFields.DODGE_FORWARD);
+        _dodges.Add(StaticAnimationFields.DODGE_RIGHT);
+        _dodges.Add(StaticAnimationFields.DODGE_BACK);
+        _dodges.Add(StaticAnimationFields.DODGE_LEFT);
     }
 
     public override void OnEnter()
     {
-        
-
-        //Animator.CrossFade(_dodges[])
+        Debug.Log("Dodge");
+        //attackAble.SetAttackingState(true);
+        float direction = moveAble.GetAmountOfDirections()/_dodges.Count;
+        //StateManager.GetStateManagerOwner().GetComponent<ImpactReceiver>().AddImpact(StateManager.GetStateManagerOwner().transform.forward * 80);
+        Animator.CrossFade(_dodges[(int)(moveAble.GetCurrentDirection()/ direction)], 0.1f);
+        //attackAble.SetAttackingState(false);
     }
 
     public override void OnExit()
     {
-        throw new System.NotImplementedException();
     }
 
     public override void OnUpdate()
     {
-        throw new System.NotImplementedException();
     }
 
 }

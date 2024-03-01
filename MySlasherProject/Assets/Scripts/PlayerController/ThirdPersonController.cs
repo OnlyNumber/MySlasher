@@ -185,7 +185,7 @@ namespace StarterAssets
 
         private void Start()
         {
-            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            //_cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
             //_hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
@@ -229,7 +229,7 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            CameraRotation();
+            //CameraRotation();
         }
 
         private void GroundedCheck()
@@ -318,8 +318,8 @@ namespace StarterAssets
             // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                  _mainCamera.transform.eulerAngles.y;
+                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg /*+
+                                  _mainCamera.transform.eulerAngles.y*/;
                 float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                     RotationSmoothTime);
 
@@ -370,11 +370,11 @@ namespace StarterAssets
             if (needAngle > needTargterRot + _angleOffset + 2)
             {
                 MoveDirectionIndex = (needTargterRot + (360 - needAngle) + _angleOffset) / directionAngle;
+
             }
             else
             {
                 MoveDirectionIndex = (needTargterRot - needAngle + _angleOffset) / directionAngle;
-
             }
 
             OnChangeDirectionIndex?.Invoke((int)MoveDirectionIndex);

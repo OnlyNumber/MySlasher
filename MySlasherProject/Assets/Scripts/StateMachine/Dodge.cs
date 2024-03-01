@@ -20,16 +20,19 @@ public class Dodge : State
 
     public override void OnEnter()
     {
-        Debug.Log("Dodge");
+        //Debug.Log("Dodge");
         //attackAble.SetAttackingState(true);
         float direction = moveAble.GetAmountOfDirections()/_dodges.Count;
         //StateManager.GetStateManagerOwner().GetComponent<ImpactReceiver>().AddImpact(StateManager.GetStateManagerOwner().transform.forward * 80);
         Animator.CrossFade(_dodges[(int)(moveAble.GetCurrentDirection()/ direction)], 0.1f);
         //attackAble.SetAttackingState(false);
+        StateManager.gameObject.layer = LayerMask.NameToLayer("Dodge");
     }
 
     public override void OnExit()
     {
+        StateManager.gameObject.layer = LayerMask.NameToLayer("Player");
+
     }
 
     public override void OnUpdate()

@@ -13,9 +13,6 @@ public class AttackControl : MonoBehaviour
     [SerializeField]
     private LayerMask mask;
 
-    [SerializeField, Tooltip("Enter here what layers can hit character")]
-    private List<int> _attackLayer;
-
     IAttackAble attackAble;
 
     public float force = 10;
@@ -59,23 +56,7 @@ public class AttackControl : MonoBehaviour
         Vector3 dir = collider.transform.position - transform.position;
         dir.y = 0; // keep the force horizontal
                    // try to get rigidbody of other object
-        bool isRightLayer = false;
-
-        foreach (var item in _attackLayer)
-        {
-            //Debug.Log((collider.gameObject.layer) + "== " + item + collider.gameObject.name);
-            if (collider.gameObject.layer == item)
-            {
-                isRightLayer = true;
-            }
-        }
-
-        if(!isRightLayer)
-        {
-            return;
-        }
-
-        //Debug.Log("GetHit");
+        
         Rigidbody rb = collider.GetComponent<Rigidbody>();
 
         if (rb)

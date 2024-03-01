@@ -44,12 +44,20 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
     private float _damage;
 
     [SerializeField]
+    private float _delayBeforeAttack;
+
+    [SerializeField]
     private HealthHandler _healthHandler;
+
+    [SerializeField]
+    private ParticleSystem _preapreAttackParticles;
+
 
     private void Start()
     {
         OnEnemyUpdate += CheckDistance;
         _healthHandler.OnHealthChange += CheckDeath;
+        _stateManager = GetComponent<StateManager>();
     }
 
 
@@ -61,15 +69,17 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
             return;
         }
 
-        OnEnemyUpdate?.Invoke();
-        _currentTimeBetweenAttack -= Time.deltaTime;
         if (!_isAttacking)
+        {
+            _currentTimeBetweenAttack -= Time.deltaTime;
+            OnEnemyUpdate?.Invoke();
             Move();
+        }
     }
 
     public void CheckDistance()
     {
-        if(_player == null)
+        if (_player == null)
         {
             _currentSpeed = 0;
             return;
@@ -80,8 +90,9 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
             _currentSpeed = 0;
             if (_currentTimeBetweenAttack <= 0)
             {
-                GetComponent<StateManager>().ChangeState(StateEnum.attack);
-                _currentTimeBetweenAttack = _timeBetweenAttack;
+                StartCoroutine(PrepareAttack(_delayBeforeAttack));
+                //_stateManager.ChangeState(StateEnum.attack);
+                //_currentTimeBetweenAttack = _timeBetweenAttack;
             }
         }
         else
@@ -90,9 +101,29 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
         }
     }
 
+    private IEnumerator PrepareAttack(float delay)
+    {
+        _preapreAttackParticles.Play();
+
+        SetAttackingState(true);
+
+        yield return new WaitForSeconds(delay);
+
+        _stateManager.ChangeState(StateEnum.attack);
+
+        _currentTimeBetweenAttack = _timeBetweenAttack;
+
+
+    }
+
 
     public void Move()
     {
+        if (_player == null)
+        {
+            return;
+        }
+
         Vector3 targetDirection;
         float angle;
 
@@ -189,11 +220,11 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
 
     public void CheckDeath(int health)
     {
-        if(health <=0)
+        if (health <= 0)
         {
             //Debug.Log("dead");
             _stateManager.ChangeState(StateEnum.death);
-        }    
+        }
     }
 
     public void StartDeath()

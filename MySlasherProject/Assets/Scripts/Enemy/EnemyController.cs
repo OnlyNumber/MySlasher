@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
+public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble, ITargetFindAble
 {
     [SerializeField]
     private CharacterController _characterController;
@@ -52,6 +52,8 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
     [SerializeField]
     private ParticleSystem _preapreAttackParticles;
 
+    [SerializeField]
+    private float _attackDistance;
 
     private void Start()
     {
@@ -85,14 +87,12 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
             return;
         }
 
-        if (Vector3.Distance(transform.position, _player.position) < 2)
+        if (Vector3.Distance(transform.position, _player.position) < _attackDistance)
         {
             _currentSpeed = 0;
             if (_currentTimeBetweenAttack <= 0)
             {
                 StartCoroutine(PrepareAttack(_delayBeforeAttack));
-                //_stateManager.ChangeState(StateEnum.attack);
-                //_currentTimeBetweenAttack = _timeBetweenAttack;
             }
         }
         else
@@ -240,5 +240,15 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
     public int GetAmountOfDirections()
     {
         return 1;
+    }
+
+    public string GetCurrentAttackName()
+    {
+        return StaticAnimationFields.ATTACK_1;
+    }
+
+    public Vector3 GetTargetPosition()
+    {
+        return _player.position;
     }
 }

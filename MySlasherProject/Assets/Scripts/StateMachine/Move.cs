@@ -72,7 +72,7 @@ public class Move : State
         if (moveAble.GetCurrentSpeed() == 0)
         {
             //Debug.Log("Change to Idle from Move");
-            StateManager.ChangeState(StateEnum.idle);
+            StateManager.BackToIdle();
         }
     }
 

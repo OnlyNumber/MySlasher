@@ -19,7 +19,7 @@ public class Attack : State
     {
         attackAble.SetAttackingState(true);
         attackAble.SetCheckAttackState(false);
-        Animator.CrossFade(StaticAnimationFields.ATTACK_1, 0.1f);
+        Animator.CrossFade(attackAble.GetCurrentAttackName(), 0.1f);
     }
 
     public override void OnExit()

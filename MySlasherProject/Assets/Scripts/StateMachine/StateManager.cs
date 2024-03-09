@@ -25,6 +25,7 @@ public class StateManager : MonoBehaviour
         _states.Add(StateEnum.stun, new Stun(_animator, this));
         _states.Add(StateEnum.death, new Death(_animator, this));
         _states.Add(StateEnum.dodge, new Dodge(_animator, this));
+        //_states.Add(StateEnum.attackRMB, new AttackRMB(_animator, this));
 
 
         _states.TryGetValue(StateEnum.idle, out _currentState);
@@ -74,5 +75,8 @@ public class StateManager : MonoBehaviour
         attack,
         stun,
         death,
-        dodge
+        dodge,
+        /*attackRMB,
+        attackShift,
+        attackR*/
     };

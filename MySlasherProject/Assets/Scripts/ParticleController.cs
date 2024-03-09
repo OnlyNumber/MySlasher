@@ -9,6 +9,8 @@ public class ParticleController : MonoBehaviour
 
     public void ParticleAttack(int particle)
     {
+        Debug.Log("ParticleAttack " + particle);
+
         particleSystemList[particle].Play();
     }
 }

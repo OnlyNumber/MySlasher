@@ -39,11 +39,18 @@ public static class StaticAnimationFields
     public static string RUN_BACK_LEFT = "RunBL";
 
 
+
     public static string ATTACK_1 = "Attack1";
 
     public static string ATTACK_2 = "Attack2";
 
     public static string ATTACK_3 = "Attack3";
+
+    public static string ATTACK_SECOND_SKILL = "AttackSecondSkill";
+
+    public static string ATTACK_THIRD_SKILL = "AttackThirdSkill";
+
+    public static string ATTACK_FOURTh_SKILL = "AttackFourthSkill";
 
     public static string STUN = "Stun";
 

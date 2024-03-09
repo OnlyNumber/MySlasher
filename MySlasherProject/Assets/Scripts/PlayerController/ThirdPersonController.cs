@@ -15,6 +15,8 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble
     {
+        #region variables;
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
@@ -83,7 +85,7 @@ namespace StarterAssets
         // player
         private float _speed;
         private float _animationBlend;
-        private float _targetRotation = 0.0f;
+        public float TargetRotation = 0.0f;
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
@@ -130,7 +132,7 @@ namespace StarterAssets
         }
 
         private float speed;
-        
+
         public float TargetSpeed
         {
             get
@@ -171,6 +173,22 @@ namespace StarterAssets
         [SerializeField]
         private HealthHandler _healthHandler;
 
+        private string _currentAttacName;
+
+        private AttackControl _attackControl;
+
+        [SerializeField]
+        private SkillControl _skillControl;
+
+        [SerializeField]
+        private float _currentTimeDodge;
+
+        [SerializeField]
+        private float _needTimeDodge;
+
+        private ImpactReceiver _impactReceiver;
+
+        #endregion
         private void Awake()
         {
             // get a reference to our main camera
@@ -178,6 +196,7 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+
 
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -195,16 +214,19 @@ namespace StarterAssets
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
-            //AssignAnimationIDs();
-
-
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            _attackControl = GetComponent<AttackControl>();
+            _impactReceiver = GetComponent<ImpactReceiver>();
+            //skillControl = GetComponent<SkillControl>();
+
             SetCheckAttackState(true);
 
             _healthHandler.OnHealthChange += CheckDeath;
+
+            //Time.timeScale = 0.3f;
 
         }
 
@@ -215,22 +237,18 @@ namespace StarterAssets
                 return;
             }
 
-            //_hasAnimator = TryGetComponent(out _animator);
             OnPersonControllerUpdate?.Invoke();
-
+            _currentTimeDodge -= Time.deltaTime;
             JumpAndGravity();
-            Dodge();
             GroundedCheck();
-            if(!IsAttacking)
-            Move();
-
+            if (!IsAttacking)
+            {
+                Move();
+                Dodge();
+            }
 
         }
 
-        private void LateUpdate()
-        {
-            //CameraRotation();
-        }
 
         private void GroundedCheck()
         {
@@ -318,9 +336,9 @@ namespace StarterAssets
             // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg /*+
+                TargetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg /*+
                                   _mainCamera.transform.eulerAngles.y*/;
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, TargetRotation, ref _rotationVelocity,
                     RotationSmoothTime);
 
                 // rotate to face input direction relative to camera position
@@ -331,7 +349,7 @@ namespace StarterAssets
 
 
 
-            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info, 100000f, mask))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info, 100000f, mask))
             {
 
             }
@@ -349,13 +367,13 @@ namespace StarterAssets
 
             float needTargterRot, needAngle;
 
-            if (_targetRotation >= 0)
+            if (TargetRotation >= 0)
             {
-                needTargterRot = _targetRotation;
+                needTargterRot = TargetRotation;
             }
             else
             {
-                needTargterRot = 360 + _targetRotation;
+                needTargterRot = 360 + TargetRotation;
             }
 
             if (angle >= 0)
@@ -379,25 +397,28 @@ namespace StarterAssets
 
             OnChangeDirectionIndex?.Invoke((int)MoveDirectionIndex);
 
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+            Vector3 targetDirection = Quaternion.Euler(0.0f, TargetRotation, 0.0f) * Vector3.forward;
 
-            //_verticalVelocity
+            //_verticalVelocity instead of -2 
             _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
                                  new Vector3(0.0f, -2f, 0.0f) * Time.deltaTime);
-                transform.rotation = Quaternion.Euler(0, angle, 0);
+            transform.rotation = Quaternion.Euler(0, angle, 0);
         }
 
         private void Dodge()
         {
-            if (_input.jump)
+            if (_input.jump && _currentTimeDodge <= 0)
             {
-                //int direction = moveAble.GetCurrentDirection() / _dodges.Count;
-                Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
-                GetComponent<ImpactReceiver>().AddImpact(targetDirection.normalized * 30);
+                Vector3 targetDirection = Quaternion.Euler(0.0f, TargetRotation, 0.0f) * Vector3.forward;
+
+                //Debug.Log(targetDirection);
+                //_impactReceiver.RestartImpact();
+                _impactReceiver.AddImpact(targetDirection.normalized * 30);
                 _stateManager.ChangeState(StateEnum.dodge);
-                _input.jump = false;
+                _currentTimeDodge = _needTimeDodge;
             }
+            _input.jump = false;
         }
 
         private void JumpAndGravity()
@@ -408,11 +429,7 @@ namespace StarterAssets
                 _fallTimeoutDelta = FallTimeout;
 
                 // update animator if using character
-                if (_hasAnimator)
-                {
-                    _animator.SetBool(_animIDJump, false);
-                    _animator.SetBool(_animIDFreeFall, false);
-                }
+
 
                 // stop our velocity dropping infinitely when grounded
                 if (_verticalVelocity < 0.0f)
@@ -511,6 +528,8 @@ namespace StarterAssets
             }
         }
 
+        #region interface realizations
+
         public float GetCurrentSpeed()
         {
             return TargetSpeed;
@@ -529,7 +548,6 @@ namespace StarterAssets
         public void RemoveOnChangeDirection(System.Action<int> removeAction)
         {
             OnChangeDirectionIndex -= removeAction;
-
         }
 
         public void SetAttackingState(bool state)
@@ -542,18 +560,14 @@ namespace StarterAssets
             return IsAttacking;
         }
 
-        public void CheckAttack()
-        {
-            if (_input.attack == true)
-            {
-                _stateManager.ChangeState(StateEnum.attackCombo);
-                _input.attack = false;
-            }
-        }
-
         public void SetAttackInput(bool state)
         {
             _input.attack = state;
+            _input.attackSecondSkill = state;
+            _input.attackThirdSkill = state;
+            _input.attackFourthSkill = state;
+
+
         }
 
         public bool GetAttackInput()
@@ -564,13 +578,13 @@ namespace StarterAssets
 
         public void SetCheckAttackState(bool state)
         {
-            if(state)
+            if (state)
             {
-                OnPersonControllerUpdate += CheckAttack;
+                OnPersonControllerUpdate += _skillControl.CheckAttack;
             }
             else
             {
-                OnPersonControllerUpdate -= CheckAttack;
+                OnPersonControllerUpdate -= _skillControl.CheckAttack;
 
             }
         }
@@ -584,7 +598,7 @@ namespace StarterAssets
         {
             _isStunned = state;
 
-            if(state)
+            if (state)
             {
                 IsAttacking = false;
             }
@@ -624,5 +638,11 @@ namespace StarterAssets
         {
             return (int)_directionCount;
         }
+
+        public string GetCurrentAttackName()
+        {
+            return _skillControl.CurrentAttacName;
+        }
+        #endregion
     }
 }

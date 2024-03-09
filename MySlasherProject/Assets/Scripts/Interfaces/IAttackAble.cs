@@ -36,5 +36,7 @@ public interface IAttackAble
 
     public abstract float GetDamage();
 
+    public abstract string GetCurrentAttackName();
+
 
 }

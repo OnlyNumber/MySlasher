@@ -5,7 +5,7 @@ using StarterAssets;
 public class AttackControl : MonoBehaviour
 {
     [SerializeField]
-    private List<MyTriggerAttack> _attackEnemyesLit = new List<MyTriggerAttack>();
+    private List<MyTriggerAttack> _collidersList = new List<MyTriggerAttack>();
 
     [SerializeField]
     private ParticleSystem _particlePrefab;
@@ -15,11 +15,15 @@ public class AttackControl : MonoBehaviour
 
     IAttackAble attackAble;
 
-    public float force = 10;
+    public float ForceToEnemy = 10;
 
     public System.Action OnSetupCollider;
 
     private ImpactReceiver _myImpactReceiver;
+
+    public float CurrentAttackForce = 20;
+
+    public float CurrentAttackDelayBeforeStop = 0.1f;
 
     private void Start()
     {
@@ -27,7 +31,7 @@ public class AttackControl : MonoBehaviour
 
         _myImpactReceiver = GetComponent<ImpactReceiver>();
 
-        foreach (var item in _attackEnemyesLit)
+        foreach (var item in _collidersList)
         {
             item.OnTriggerAttack += Attack;
         }
@@ -41,11 +45,27 @@ public class AttackControl : MonoBehaviour
 
     public void PushForwardAttack()
     {
-        Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info, 100000f, mask);
+        //Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info, 100000f, mask);
 
-        Vector3 mousePos = info.point;
-        Vector3 dif = mousePos - transform.position;
-        _myImpactReceiver.AddImpact(dif.normalized * 20);
+        //Vector3 mousePos = info.point;
+        //Vector3 dif = mousePos - transform.position;
+
+        //var lDirection = new Vector3(Mathf.Sin(Mathf.Deg2Rad * angle), 0, Mathf.Cos(Mathf.Deg2Rad * angle));
+        
+        float angle = transform.rotation.y;
+
+        if(angle < 0)
+        {
+            angle = 360 + angle; 
+        }
+
+        Vector3 newForward = Quaternion.Euler(0, angle, 0) * transform.forward;
+        
+        
+        //Debug.Log(newForward.normalized);
+
+
+        _myImpactReceiver.AddImpact(newForward.normalized * CurrentAttackForce);
     }
 
     public void Attack(Collider collider)
@@ -61,14 +81,14 @@ public class AttackControl : MonoBehaviour
 
         if (rb)
         { // use AddForce for rigidbodies:
-            rb.AddForce(dir.normalized * force);
+            rb.AddForce(dir.normalized * ForceToEnemy);
         }
         else
         {
             // try to get the enemy's script ImpactReceiver:
             ImpactReceiver script = collider.GetComponent<ImpactReceiver>();
             // if it has such script, add the impact force:
-            if (script) script.AddImpact(dir.normalized * force);
+            if (script) script.AddImpact(dir.normalized * ForceToEnemy);
         }
 
 
@@ -85,28 +105,21 @@ public class AttackControl : MonoBehaviour
 
     public void SetupCollider(int index)
     {
-        _attackEnemyesLit[index].gameObject.SetActive(true);
+        _collidersList[index].gameObject.SetActive(true);
 
 
         OnSetupCollider?.Invoke();
 
-        /*ImpactReceiver script = GetComponent<ImpactReceiver>();
-
-        Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit info, 100000f, mask);
-
-        Vector3 mousePos = info.point;
-        Vector3 dif = mousePos - transform.position;
-        if (script) script.AddImpact(dif.normalized * 20);*/
-
         StopAllCoroutines();
-        StartCoroutine(StopAttack(index));
+        StartCoroutine(StopAttack(index, CurrentAttackDelayBeforeStop));
     }
 
-    IEnumerator StopAttack(int index)
+    IEnumerator StopAttack(int index,float delay)
     {
-        yield return new WaitForSeconds(0.1f);
-        _attackEnemyesLit[index].gameObject.SetActive(false);
+        yield return new WaitForSeconds(delay);
+        _collidersList[index].gameObject.SetActive(false);
     }
+
 
     public void StopAddForce()
     {

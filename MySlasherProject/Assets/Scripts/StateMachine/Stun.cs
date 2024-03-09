@@ -31,7 +31,7 @@ public class Stun : State
     {
         if(_currentTimeStun <= 0)
         {
-            StateManager.ChangeState(StateEnum.idle);
+            StateManager.BackToIdle();
         }
         _currentTimeStun -= Time.deltaTime;
 

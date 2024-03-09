@@ -24,7 +24,7 @@ public class Dodge : State
         //attackAble.SetAttackingState(true);
         float direction = moveAble.GetAmountOfDirections()/_dodges.Count;
         //StateManager.GetStateManagerOwner().GetComponent<ImpactReceiver>().AddImpact(StateManager.GetStateManagerOwner().transform.forward * 80);
-        Animator.CrossFade(_dodges[(int)(moveAble.GetCurrentDirection()/ direction)], 0.1f);
+        Animator.Play(_dodges[(int)(moveAble.GetCurrentDirection()/ direction)]);
         //attackAble.SetAttackingState(false);
         StateManager.gameObject.layer = LayerMask.NameToLayer("Dodge");
     }

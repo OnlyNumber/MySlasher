@@ -13,6 +13,10 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool attack;
+		public bool attackSecondSkill;
+		public bool attackThirdSkill;
+		public bool attackFourthSkill;
+
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -48,6 +52,22 @@ namespace StarterAssets
 		public void OnAttackLM(InputValue value)
 		{
 			AttackLMInput(value.isPressed);
+
+		}
+
+		public void OnAttackSecondSkill(InputValue value)
+		{
+			AttackSecondSkillInput(value.isPressed);
+		}
+
+		public void OnAttackThirdSkill(InputValue value)
+		{
+			AttackThirdSkillInput(value.isPressed);
+		}
+
+		public void OnAttackFourthSkill(InputValue value)
+		{
+			AttackFourthSkillInput(value.isPressed);
 		}
 
 #endif
@@ -76,6 +96,21 @@ namespace StarterAssets
 		public void AttackLMInput(bool newattackState)
 		{
 			attack = newattackState;
+		}
+
+		public void AttackSecondSkillInput(bool newattackState)
+		{
+			attackSecondSkill = newattackState;
+		}
+
+		public void AttackThirdSkillInput(bool newattackState)
+		{
+			attackThirdSkill = newattackState;
+		}
+
+		public void AttackFourthSkillInput(bool newattackState)
+		{
+			attackFourthSkill = newattackState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)

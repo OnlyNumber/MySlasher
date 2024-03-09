@@ -19,6 +19,14 @@ public class ImpactReceiver : MonoBehaviour
     { // CharacterController version of AddForce
         //impact = Vector3.zero;
         impact = force / mass;
+
+        Debug.Log(gameObject.name + " " + impact);
+        //Debug.Log(impact);
+    }
+
+    public void RestartImpact()
+    {
+        impact = Vector3.zero;
     }
 
 
@@ -31,7 +39,7 @@ public class ImpactReceiver : MonoBehaviour
         }
         // impact energy goes by over time:
 
-
         impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
+        
     }
 }

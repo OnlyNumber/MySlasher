@@ -62,6 +62,7 @@ public class AttackCombo : State
             //attackAble.SetAttackInput(false);
 
         }
+            StateManager.GetComponent<StarterAssetsInputs>().jump = false;
     }
 
     public bool CheckAttack()
@@ -76,11 +77,6 @@ public class AttackCombo : State
         return true;
     }
 
-    public void BackToIdle()
-    {
-        StateManager.ChangeState(StateEnum.idle);
-
-    }
 
 
 

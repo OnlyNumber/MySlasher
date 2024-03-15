@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c993a553169c00f43bf9963bd82f6900, type: 3}
   m_Name: EnemyFabric
   m_EditorClassIdentifier: 
-  _meleeEnemy: {fileID: 1072196260358764734, guid: e26d4370279b5d048b2d59868f4d765d, type: 3}
+  _meleeEnemy: {fileID: 4415192067528715604, guid: 6ac64bb39ca1e3249a7fb44cd340d8da, type: 3}
+  _archerEnemy: {fileID: 7502417386905607566, guid: 378b373c24cdecd41b5a8acef51eb9c4, type: 3}
+  _mageEnemy: {fileID: 117230348914056111, guid: 44de189b9d138304ca23d54f4ad32c39, type: 3}

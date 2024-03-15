@@ -1,65 +1,83 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DataControl : MonoBehaviour
 {
-    private PlayerData _playerData;
+    [SerializeField]
+    private PlayerDataC _playerData;
 
-    public System.Action<PlayerData> OnDataLoaded;
+    public System.Action<PlayerDataC> OnDataLoaded;
 
     public static DataControl Instance;
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
         else
         {
             Destroy(gameObject);
-        } 
-        
+        }
+
     }
 
     private void Start()
     {
+        if (PlayerPrefs.HasKey(StaticFields.PLAYER_DATA))
+        {
+            Debug.Log("has key start");
+        }
+
+
         LoadData();
+
+    }
+
+    private void Update()
+    {
+        /*Debug.Log("_musicVolume volume: " + _playerData._musicVolume);
+        Debug.Log("_clipVolume volume: " + _playerData._clipVolume);
+        Debug.Log("_masterVolume volume: " + _playerData._masterVolume);
+        Debug.Log("_masterVolumeTest volume: " + _playerData._masterVolumeTest);*/
+
+
+    }
+
+    [ContextMenu("Check")]
+    public void Check()
+    {
+        if (PlayerPrefs.HasKey(StaticFields.PLAYER_DATA))
+        {
+            Debug.Log("has key");
+        }
     }
 
     private void LoadData()
     {
-        _playerData = SaveManager.Load<PlayerData>(StaticFields.PLAYER_DATA);
+        _playerData = SaveManager.Load<PlayerDataC>(StaticFields.PLAYER_DATA);
 
         OnDataLoaded?.Invoke(_playerData);
     }
 
-}
-
-public class PlayerData
-{
-    public float MusicVolume;
-
-    public float SoundVolume;
-
-    public int CurrentCharacter;
-
-    public List<bool> OpenCharacter;
-
-    public PlayerData()
+    /*public float GetMusicVolume()
     {
-        MusicVolume = 1;
+        return _playerData.MusicVolume;
+    }
 
-        SoundVolume = 1;
+    public void SetMusicVolume(float value)
+    {
+        _playerData.MusicVolume = value;
+    }*/
 
-        CurrentCharacter = 0;
-
-        OpenCharacter = new List<bool>();
-
-        OpenCharacter.Add(true);
-
-        
+    private void OnApplicationQuit()
+    {
+        SaveManager.Save(_playerData, StaticFields.PLAYER_DATA);
     }
 
 }
+
+

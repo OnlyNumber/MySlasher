@@ -188,6 +188,8 @@ namespace StarterAssets
 
         private ImpactReceiver _impactReceiver;
 
+        public float DamageModifier;
+
         #endregion
         private void Awake()
         {
@@ -238,7 +240,9 @@ namespace StarterAssets
             }
 
             OnPersonControllerUpdate?.Invoke();
+
             _currentTimeDodge -= Time.deltaTime;
+            
             JumpAndGravity();
             GroundedCheck();
             if (!IsAttacking)
@@ -247,6 +251,7 @@ namespace StarterAssets
                 Dodge();
             }
 
+            _skillControl.ResetInput();
         }
 
 
@@ -412,8 +417,7 @@ namespace StarterAssets
 
                 Vector3 targetDirection = Quaternion.Euler(0.0f, TargetRotation, 0.0f) * Vector3.forward;
 
-                //Debug.Log(targetDirection);
-                //_impactReceiver.RestartImpact();
+                Debug.Log("Dodge");
                 _impactReceiver.AddImpact(targetDirection.normalized * 30);
                 _stateManager.ChangeState(StateEnum.dodge);
                 _currentTimeDodge = _needTimeDodge;
@@ -612,14 +616,15 @@ namespace StarterAssets
 
         public float GetDamage()
         {
-            return _damage;
+            return _damage * _skillControl.GetCurrentSkill().DamageModifier;
         }
 
         public void CheckDeath(int health)
         {
             if (health <= 0)
             {
-                //Debug.Log("dead");
+
+                gameObject.layer = LayerMask.NameToLayer(StaticFields.INVINSIBLE_LAYER);
                 _stateManager.ChangeState(StateEnum.death);
             }
         }
@@ -641,7 +646,7 @@ namespace StarterAssets
 
         public string GetCurrentAttackName()
         {
-            return _skillControl.CurrentAttacName;
+            return _skillControl.CurrentAttackName;
         }
         #endregion
     }

@@ -8,4 +8,11 @@ public class ActivePanel : MonoBehaviour
     {
         gameObject.SetActive(activate);
     }
+
+    public bool IsShowed()
+    {
+        return gameObject.activeInHierarchy;
+    }
+
+
 }

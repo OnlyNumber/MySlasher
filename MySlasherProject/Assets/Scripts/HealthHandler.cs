@@ -28,10 +28,16 @@ public class HealthHandler : MonoBehaviour
                 _currentHealth = MaxHealth;
             }
 
-            Debug.Log(_currentHealth);
+
+
+            //Debug.Log(_currentHealth);
 
             OnHealthChange?.Invoke(_currentHealth);
 
+            /*if(_currentHealth < 0)
+            {
+                CurrentHealth = 0;
+            }*/
         }
 
     }

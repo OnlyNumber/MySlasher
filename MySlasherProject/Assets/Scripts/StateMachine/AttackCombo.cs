@@ -27,7 +27,7 @@ public class AttackCombo : State
 
         attackAble.SetCheckAttackState(false);
         //StateManager.OnStateManagerUpdate -= StateManager.CheckAttack;
-        Animator.CrossFade(_attacks[_currentAttackIndex], 0.0f);
+        Animator.Play(_attacks[_currentAttackIndex]);
         _currentAttackIndex++;
     }
 
@@ -51,7 +51,7 @@ public class AttackCombo : State
         {
 
             attackAble.SetAttackingState(true);
-            Animator.CrossFade(_attacks[_currentAttackIndex], 0.1f);
+            Animator.Play(_attacks[_currentAttackIndex]);
 
             _currentAttackIndex++;
             attackAble.SetAttackInput(false);

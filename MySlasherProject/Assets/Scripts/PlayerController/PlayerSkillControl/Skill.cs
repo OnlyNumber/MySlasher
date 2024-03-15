@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class Skill
+[CreateAssetMenu(fileName = "Skill")]
+public class Skill : ScriptableObject
 {
     public float CooldownTime;
 
@@ -17,7 +17,7 @@ public class Skill
 
     public float TimeBeforeStopCollider;
 
-    public Sprite IcoSkill;
+    public Sprite IconSkill;
 
     public string SkillDescription;
 

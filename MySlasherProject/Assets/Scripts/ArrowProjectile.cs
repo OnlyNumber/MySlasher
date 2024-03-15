@@ -10,7 +10,7 @@ public class ArrowProjectile : Projectile
     {
         base.Initialize(damage, angle);
 
-        Debug.Log("Arrow initialize. angle: " + angle);
+        //Debug.Log("Arrow initialize. angle: " + angle);
 
         transform.rotation = angle;
         MyTriggerAttack.OnTriggerAttack += AttackMethod;

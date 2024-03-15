@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 907592709867b7f4bb362135f4667765, type: 3}
+  m_Name: GreatswordCharacter
+  m_EditorClassIdentifier: 
+  SkillIcons:
+  - {fileID: 11400000, guid: d16dac71f31060c488dbe96538a959d9, type: 2}
+  - {fileID: 11400000, guid: 2ac1e3b5c54919347a51dfe3b881c109, type: 2}
+  - {fileID: 11400000, guid: 2aeaaa350ac6b0b47b4aa52e33ccbefb, type: 2}
+  - {fileID: 11400000, guid: ff6fdff4ad41c324fa7581f978bc8bf2, type: 2}
+  CharacterIcon: {fileID: 873005141, guid: 855cda47c8944d840a147a01be0ce820, type: 3}
+  CharacteModel: {fileID: 8530577678323916689, guid: ba0df3f72fc323d45adc1b9dac3764d3, type: 3}
+  personController: {fileID: 9182608954616015140, guid: f4a4480832d618f448933a38fbd9a277, type: 3}

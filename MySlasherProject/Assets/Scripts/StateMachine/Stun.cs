@@ -16,7 +16,22 @@ public class Stun : State
 
     public override void OnEnter()
     {
-        Animator.Play(StaticAnimationFields.STUN,0,0);
+        Debug.Log("StartStun");
+
+        if(Animator.GetCurrentAnimatorStateInfo(0).IsName(StaticAnimationFields.STUN))
+        {
+            //Animator.Play(StaticAnimationFields.IDLE);
+
+            //Animator.Play(StaticAnimationFields.STUN);
+
+            Animator.Play(StaticAnimationFields.STUN, -1, 0f);
+
+
+        }
+
+        //Animator.Play(StaticAnimationFields.STUN, -1, 0f);
+
+        Animator.Play(StaticAnimationFields.STUN);
         _stunAble.SetStun(true);
         _currentTimeStun = _stunAble.GetStunTime();
     }

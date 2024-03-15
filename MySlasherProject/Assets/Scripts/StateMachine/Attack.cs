@@ -17,9 +17,13 @@ public class Attack : State
 
     public override void OnEnter()
     {
+        Debug.Log("Start attack");
+
         attackAble.SetAttackingState(true);
         attackAble.SetCheckAttackState(false);
-        Animator.CrossFade(attackAble.GetCurrentAttackName(), 0.1f);
+
+        Animator.Play(attackAble.GetCurrentAttackName());
+        //Animator.CrossFade(attackAble.GetCurrentAttackName(), 0.1f);
     }
 
     public override void OnExit()
@@ -27,6 +31,9 @@ public class Attack : State
         attackAble.SetCheckAttackState(true);
         attackAble.SetAttackInput(false);
         attackAble.SetAttackingState(false);
+
+        OnStateExit?.Invoke();
+
     }
 
 

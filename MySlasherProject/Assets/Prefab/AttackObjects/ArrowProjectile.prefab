@@ -9865,7 +9865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MyTriggerAttack: {fileID: 7119818509947956673}
-  Speed: 10
+  Speed: 30
   Damage: 0
 --- !u!114 &7119818509947956673
 MonoBehaviour:

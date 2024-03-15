@@ -8,6 +8,8 @@ public abstract class State
 
     protected StateManager StateManager;
 
+    public System.Action OnStateExit;
+
 
     public State(Animator animator, StateManager stateManager)
     {

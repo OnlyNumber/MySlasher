@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Death : State
 {
-    IStunAble stunAble;
+    private IStunAble _stunAble;
 
 
     public Death(Animator animator, StateManager stateManager) : base(animator, stateManager)
     {
 
-        stunAble = StateManager.GetStateManagerOwner().GetComponent<IStunAble>();
+        _stunAble = StateManager.GetStateManagerOwner().GetComponent<IStunAble>();
 
         //_personController = StateManager.GetThirdPersonController();
     }
@@ -18,8 +18,8 @@ public class Death : State
     public override void OnEnter()
     {
         Debug.Log("Start death");
-        stunAble.SetStun(true);
-        Animator.CrossFade(StaticAnimationFields.DEATH, 0.1f);
+        _stunAble.SetStun(true);
+        Animator.Play(StaticAnimationFields.DEATH);
     }
 
     public override void OnExit()

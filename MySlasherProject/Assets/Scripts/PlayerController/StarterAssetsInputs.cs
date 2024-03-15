@@ -16,6 +16,7 @@ namespace StarterAssets
 		public bool attackSecondSkill;
 		public bool attackThirdSkill;
 		public bool attackFourthSkill;
+		public bool escape;
 
 
 		[Header("Movement Settings")]
@@ -41,6 +42,7 @@ namespace StarterAssets
 
 		public void OnJump(InputValue value)
 		{
+			//Debug.Log("Jump");
 			JumpInput(value.isPressed);
 		}
 
@@ -69,6 +71,13 @@ namespace StarterAssets
 		{
 			AttackFourthSkillInput(value.isPressed);
 		}
+
+		public void OnEscape(InputValue value)
+		{
+			//Debug.Log("Jump");
+			EscapeInput(value.isPressed);
+		}
+
 
 #endif
 
@@ -111,6 +120,11 @@ namespace StarterAssets
 		public void AttackFourthSkillInput(bool newattackState)
 		{
 			attackFourthSkill = newattackState;
+		}
+
+		public void EscapeInput(bool newJumpState)
+		{
+			escape = newJumpState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)

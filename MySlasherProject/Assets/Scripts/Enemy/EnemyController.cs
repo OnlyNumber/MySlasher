@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StarterAssets;
 
 public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble, ITargetFindAble
 {
@@ -55,15 +56,30 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
     [SerializeField]
     private float _attackDistance;
 
+    private float _angle;
+
+    private bool _isRotating = true;
+
+    private EnemySpawner _enemySpawner;
+
+    public float _currentDelayTime;
+
     private void Start()
     {
         OnEnemyUpdate += CheckDistance;
         _healthHandler.OnHealthChange += CheckDeath;
         _stateManager = GetComponent<StateManager>();
+
+        _stateManager.GetState(StateEnum.attack).OnStateExit += ChangeToSearchState;
+
     }
 
+    public void Initialize(Transform player, EnemySpawner enemySpawner)
+    {
+        _player = player;
+        _enemySpawner = enemySpawner;
+    }
 
-    // Update is called once per frame
     public void OnUpdate()
     {
         if (_isStunned)
@@ -71,12 +87,82 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
             return;
         }
 
+        FindingAngle();
+
+        OnEnemyUpdate?.Invoke();
+        
         if (!_isAttacking)
         {
+
+
             _currentTimeBetweenAttack -= Time.deltaTime;
-            OnEnemyUpdate?.Invoke();
             Move();
+
         }
+
+        if (_isRotating)
+        {
+            Rotating();
+        }
+
+    }
+
+    public void StopRotating()
+    {
+        _isRotating = false;
+    }
+
+    public void ContinueRotating()
+    {
+        _isRotating = true;
+    }
+
+    bool firstAttack;
+
+    public void ChangeToAttackState()
+    {
+
+        Debug.Log("Changer attack");
+
+        OnEnemyUpdate -= CheckDistance;
+        OnEnemyUpdate += Attacking;
+
+        _preapreAttackParticles.Play();
+
+        firstAttack = true;
+
+        _currentDelayTime = _delayBeforeAttack;
+
+        SetAttackingState(true);
+
+    }
+
+
+    public void Attacking()
+    {
+        //_preapreAttackParticles.Play();
+        _currentDelayTime -= Time.deltaTime;
+
+
+        if (_currentDelayTime <= 0 && firstAttack)
+        {
+            SetAttackingState(true);
+
+            _stateManager.ChangeState(StateEnum.attack);
+
+            _currentTimeBetweenAttack = _timeBetweenAttack;
+
+            firstAttack = false;
+        }
+    }
+
+    public void ChangeToSearchState()
+    {
+        Debug.Log("Changer search");
+
+
+        OnEnemyUpdate -= Attacking;
+        OnEnemyUpdate += CheckDistance;
     }
 
     public void CheckDistance()
@@ -87,12 +173,18 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
             return;
         }
 
+        //OnUpdateEnemy?.Invoke();
+
         if (Vector3.Distance(transform.position, _player.position) < _attackDistance)
         {
             _currentSpeed = 0;
             if (_currentTimeBetweenAttack <= 0)
             {
-                StartCoroutine(PrepareAttack(_delayBeforeAttack));
+
+                Debug.Log("Nu pochemu");
+                ChangeToAttackState();
+
+                //StartCoroutine(PrepareAttack(_delayBeforeAttack));
             }
         }
         else
@@ -100,6 +192,8 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
             _currentSpeed = _speed;
         }
     }
+
+
 
     private IEnumerator PrepareAttack(float delay)
     {
@@ -116,6 +210,18 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
 
     }
 
+    public void FindingAngle()
+    {
+        Vector3 targetDirection;
+
+        targetDirection = _player.position - transform.position;
+        _angle = Mathf.Atan2(targetDirection.normalized.x, targetDirection.normalized.z) * Mathf.Rad2Deg; ;
+    }
+
+    public void Rotating()
+    {
+        transform.rotation = Quaternion.Euler(0, _angle, 0);
+    }
 
     public void Move()
     {
@@ -125,17 +231,11 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
         }
 
         Vector3 targetDirection;
-        float angle;
 
         targetDirection = _player.position - transform.position;
-        angle = Mathf.Atan2(targetDirection.normalized.x, targetDirection.normalized.z) * Mathf.Rad2Deg; ;
 
-        _characterController.Move(Vector3.zero);
+        _characterController.Move(targetDirection.normalized * _currentSpeed * Time.deltaTime);
 
-        _characterController.Move(targetDirection.normalized * _currentSpeed * Time.deltaTime /*+ new Vector3(0.0f, -2, 0.0f) * Time.deltaTime*/);
-        transform.rotation = Quaternion.Euler(0, angle, 0);
-
-        //
         OnChangeDirectionIndex?.Invoke(0);
 
     }
@@ -144,6 +244,8 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
     {
         _stateManager.ChangeState(StateEnum.stun);
     }
+
+    #region implementing Interfaces
 
     public bool GetAttackingState()
     {
@@ -190,11 +292,11 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
     {
         if (state)
         {
-            OnEnemyUpdate += CheckDistance;
+            //OnEnemyUpdate += CheckDistance;
         }
         else
         {
-            OnEnemyUpdate -= CheckDistance;
+            //OnEnemyUpdate -= CheckDistance;
 
         }
     }
@@ -222,14 +324,20 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
     {
         if (health <= 0)
         {
-            //Debug.Log("dead");
+
+            gameObject.layer = LayerMask.NameToLayer(StaticFields.INVINSIBLE_LAYER);
             _stateManager.ChangeState(StateEnum.death);
         }
+
+
+
     }
 
     public void StartDeath()
     {
+        _enemySpawner.RemoveEnemy(this);
         Destroy(gameObject);
+
     }
 
     public int GetCurrentDirection()
@@ -251,4 +359,5 @@ public class EnemyController : MonoBehaviour, IMoveAble, IAttackAble, IStunAble,
     {
         return _player.position;
     }
+    #endregion
 }

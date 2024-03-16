@@ -24,7 +24,7 @@ public class PlayerSpawner : MonoBehaviour
     private Cinemachine.CinemachineVirtualCamera _virtualCamera;
 
     [SerializeField]
-    private HealthPlayerUI _healthUI;
+    private PlayerUI _healthUI;
 
 
     private void Start()
@@ -32,7 +32,7 @@ public class PlayerSpawner : MonoBehaviour
         DataControl.Instance.OnDataLoaded += Initialize;
     }
 
-    public void Initialize(PlayerDataC playerInfo)
+    public void Initialize(PlayerData playerInfo)
     {
         SpawnPlayer(playerInfo.CurrentCharacter);
 
@@ -40,6 +40,7 @@ public class PlayerSpawner : MonoBehaviour
         _virtualCamera.LookAt = _player.transform;
 
         _player.GetComponent<SkillControl>().Initialize(_icons);
+        
         _healthUI.Initialize(_player.GetComponent<HealthHandler>());
 
         _pauseControl.Initialize(_player.GetComponent<StarterAssetsInputs>());

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class CharacterSelecter : MonoBehaviour
 {
@@ -29,18 +30,16 @@ public class CharacterSelecter : MonoBehaviour
     [SerializeField]
     private Transform _characterPos;
 
-    //private int _currentCharacter = -1;
-
-    private PlayerDataC _player;
+    private PlayerData _player;
 
     private void Start()
     {
 
-        DataControl.Instance.OnDataLoaded += Initialize;
+        //DataControl.Instance.OnDataLoaded += Initialize;
 
     }
 
-    private void Initialize(PlayerDataC player)
+    [Inject] private void Initialize(PlayerData player)
     {
         _player = player;
         

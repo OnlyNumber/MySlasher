@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StarterAssets;
+using Zenject;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -19,6 +21,16 @@ public class EnemySpawner : MonoBehaviour
     public void Initialize(Transform player)
     {
         _player = player;
+
+    }
+
+    [Inject] public void Initialize(ThirdPersonController player)
+    {
+        Debug.Log("First Enemy spawner");
+
+        _player = player.transform;
+
+        SpawnWave();
 
     }
 

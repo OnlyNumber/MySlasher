@@ -34,10 +34,10 @@ public class HealthHandler : MonoBehaviour
 
             OnHealthChange?.Invoke(_currentHealth);
 
-            /*if(_currentHealth < 0)
+            if(_currentHealth < 0)
             {
                 CurrentHealth = 0;
-            }*/
+            }
         }
 
     }

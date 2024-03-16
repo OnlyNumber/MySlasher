@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarterAssets;
 using UnityEngine.UI;
-
+using Zenject;
 
 public class SkillControl : MonoBehaviour
 {
@@ -32,12 +32,16 @@ public class SkillControl : MonoBehaviour
     {
         _attackControl = GetComponent<AttackControl>();
         _input = GetComponent<StarterAssetsInputs>();
-        //_stateManager = GetComponent<StateManager>();
     }
 
     public void Initialize(List<Image> cooldownIcons)
     {
         _cooldownIcons = cooldownIcons;
+    }
+
+    [Inject] public void Initialize(PlayerUI cooldownIcons)
+    {
+        _cooldownIcons = cooldownIcons.IconsColdown;
     }
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using Zenject;
 
 public class SoundController : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class SoundController : MonoBehaviour
 
     public Action<bool> OnMusicSoundChange;
 
-    private PlayerDataC _playerData;
+    private PlayerData _playerData;
 
     private void Start()
     {
@@ -43,18 +44,16 @@ public class SoundController : MonoBehaviour
 
         _backgroundMusicSource.Play();
 
-
-
-        //Instance.OnClipSoundChange += _buttonSound.SwitchSpriteMethod;
-
-        //Instance.OnMusicSoundChange += _buttonMusic.SwitchSpriteMethod;
-
-        DataControl.Instance.OnDataLoaded += Initialize;
+        //DataControl.Instance.OnDataLoaded += Initialize;
 
     }
 
-    public void Initialize(PlayerDataC playerData)
+    [Inject]
+    public void Initialize(PlayerData playerData)
     {
+        Debug.Log("Sound has been Initialized");
+
+
         _playerData = playerData;
 
         _sliderMusic.value = playerData._musicVolume;
@@ -62,6 +61,8 @@ public class SoundController : MonoBehaviour
         _sliderClipSound.value = playerData._clipVolume;
 
         _sliderMasterSound.value = playerData._masterVolume;
+
+        Debug.Log(playerData._musicVolume + " + " + playerData._clipVolume + " + " + playerData._masterVolume);
 
         Debug.Log(playerData._musicVolume);
 
@@ -120,6 +121,11 @@ public class SoundController : MonoBehaviour
 
     public void SetMasterSound()
     {
+        if (_playerData == null)
+        {
+            Debug.Log("_playerData == null");
+        }
+
         _playerData._masterVolume = _sliderMasterSound.value;
         _backgroundMusicSource.volume = _playerData._musicVolume * _playerData._masterVolume;
 

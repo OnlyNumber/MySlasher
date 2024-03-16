@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using StarterAssets;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class PauseControl : MonoBehaviour
 {
@@ -24,6 +25,15 @@ public class PauseControl : MonoBehaviour
     public void Initialize(StarterAssetsInputs input)
     {
         _input = input;
+
+        _healthHandler = _input.GetComponent<HealthHandler>();
+
+        _healthHandler.OnHealthChange += CheckDeath;
+    }
+
+    [Inject] public void Initialize(ThirdPersonController player)
+    {
+        _input = player.GetComponent<StarterAssetsInputs>();
 
         _healthHandler = _input.GetComponent<HealthHandler>();
 

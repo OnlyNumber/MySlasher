@@ -6,9 +6,9 @@ using System;
 public class DataControl : MonoBehaviour
 {
     [SerializeField]
-    private PlayerDataC _playerData;
+    private PlayerData _playerData;
 
-    public System.Action<PlayerDataC> OnDataLoaded;
+    public System.Action<PlayerData> OnDataLoaded;
 
     public static DataControl Instance;
 
@@ -37,16 +37,6 @@ public class DataControl : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        /*Debug.Log("_musicVolume volume: " + _playerData._musicVolume);
-        Debug.Log("_clipVolume volume: " + _playerData._clipVolume);
-        Debug.Log("_masterVolume volume: " + _playerData._masterVolume);
-        Debug.Log("_masterVolumeTest volume: " + _playerData._masterVolumeTest);*/
-
-
-    }
-
     [ContextMenu("Check")]
     public void Check()
     {
@@ -58,20 +48,10 @@ public class DataControl : MonoBehaviour
 
     private void LoadData()
     {
-        _playerData = SaveManager.Load<PlayerDataC>(StaticFields.PLAYER_DATA);
+        _playerData = SaveManager.Load<PlayerData>(StaticFields.PLAYER_DATA);
 
         OnDataLoaded?.Invoke(_playerData);
     }
-
-    /*public float GetMusicVolume()
-    {
-        return _playerData.MusicVolume;
-    }
-
-    public void SetMusicVolume(float value)
-    {
-        _playerData.MusicVolume = value;
-    }*/
 
     private void OnApplicationQuit()
     {

@@ -149640,7 +149640,7 @@ MonoBehaviour:
     m_Bits: 1
   IsAttacking: 0
   _stunTime: 0.5
-  _damage: 111
+  _damage: 10
   _healthHandler: {fileID: 2497536882344625612}
   _skillControl: {fileID: 6167567540686564337}
   _currentTimeDodge: 0

@@ -2069,7 +2069,8 @@ MonoBehaviour:
   _delayBeforeAttack: 0.6
   _healthHandler: {fileID: 7140665287571139818}
   _preapreAttackParticles: {fileID: 4176450754567072016}
-  _attackDistance: 5
+  _attackDistance: 10
+  _currentDelayTime: 0
 --- !u!114 &8338349159449857097
 MonoBehaviour:
   m_ObjectHideFlags: 0

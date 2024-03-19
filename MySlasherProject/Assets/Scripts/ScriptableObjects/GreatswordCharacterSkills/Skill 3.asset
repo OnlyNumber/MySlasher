@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22732c393f3a3584db1e1742ce848252, type: 3}
   m_Name: Skill 3
   m_EditorClassIdentifier: 
-  CooldownTime: 0
-  CurrentCooldownTime: 2.5164518
+  CooldownTime: 8
+  CurrentCooldownTime: 0
   DamageModifier: 1.5
   ForcePowerPlayer: 10
   ForcePowerToEnemy: -40

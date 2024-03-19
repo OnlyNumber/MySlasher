@@ -72,9 +72,18 @@ public class PauseControl : MonoBehaviour
 
     public void ShowPanel()
     {
+        _input.GetComponent<PlayerInput>().enabled = false;
         _pausePanel.SetActivity(true);
         _timeControl.SetTime(0);
     }
+
+    public void ClosePanel()
+    {
+        _input.GetComponent<PlayerInput>().enabled = true;
+        _pausePanel.SetActivity(false);
+        _timeControl.SetTime(1);
+    }
+
 
     public void RestartGame()
     {

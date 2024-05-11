@@ -17,6 +17,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2ac1e3b5c54919347a51dfe3b881c109, type: 2}
   - {fileID: 11400000, guid: 2aeaaa350ac6b0b47b4aa52e33ccbefb, type: 2}
   - {fileID: 11400000, guid: ff6fdff4ad41c324fa7581f978bc8bf2, type: 2}
-  CharacterIcon: {fileID: 873005141, guid: 855cda47c8944d840a147a01be0ce820, type: 3}
+  CharacterIcon: {fileID: 7895617287088803458, guid: 855cda47c8944d840a147a01be0ce820, type: 3}
   CharacteModel: {fileID: 8530577678323916689, guid: ba0df3f72fc323d45adc1b9dac3764d3, type: 3}
   personController: {fileID: 9182608954616015140, guid: f4a4480832d618f448933a38fbd9a277, type: 3}
